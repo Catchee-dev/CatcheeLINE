@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <base target="_top">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>キャッチする</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.min.css">
+    <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script> -->
+    <style>
+      .scroll_x {
+        width: 100%;
+        overflow-x: scroll;
+        white-space: nowrap;
+        /* background-color: #ddd; */
+        /* padding: 10px 0; */
+      }
+
+      :root {
+        --primary: #fd7e14;
+      }
+      .btn-primary {
+        background-color: var(--primary);
+        border-color: var(--primary);
+      }
+      .btn-primary:hover {
+        background-color: var(--primary);
+        border-color: var(--primary);
+      }
+      .btn-primary:active {
+        background-color: var(--primary);
+        border-color: var(--primary);
+      }
+      .btn-outline-primary {
+        /* background-color: var(--primary); */
+        border-color: var(--primary);
+        color: var(--primary);
+      }
+      .btn-outline-primary:hover {
+          color: #fff;
+          background-color: var(--primary);
+          border-color: var(--primary);
+      }
+      .btn-outline-primary:active {
+          color: #fff;
+          background-color: var(--primary);
+          border-color: var(--primary);
+        }
+        .btn-check:active+.btn-outline-primary, .btn-check:checked+.btn-outline-primary, .btn-outline-primary.active, .btn-outline-primary.dropdown-toggle.show, .btn-outline-primary:active {
+          color: #fff;
+          background-color: var(--primary);
+          border-color: var(--primary);
+      }
+    </style>
+    
+</head>
+<body>
+  <header>
+    <h5 class="border-bottom py-2 text-center">キャッチする</h5>
+  </header>
+  <main class="">
+    <form class="p-3">
+      <div class="">
+          <label class="fw-bold mb-3">
+            案内可能な人数
+            <span class="fw-normal text-muted" style="font-size: small;">（複数選択できます）</span>
+          </label>
+          <div id="member_button_area" name="member_button_area" class="scroll_x">
+            <!-- ここにボタン -->
+          </div>
+          <hr>
+      </div>
+      <div class="">
+          <label for="seat" class="fw-bold mb-3">
+            案内可能な席
+            <span class="fw-normal text-muted" style="font-size: small;">（複数選択できます）</span>
+          </label>
+          <div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="checkbox" id="seat1" name="seat[]" value="カウンター">
+              <label class="form-check-label" for="seat1">カウンター</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="checkbox" id="seat2" name="seat[]" value="テーブル">
+              <label class="form-check-label" for="seat2">テーブル</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="checkbox" id="seat3" name="seat[]" value="個室">
+              <label class="form-check-label" for="seat3">個室</label>
+            </div>
+          </div>
+          <hr>
+      </div>
+      <div class="">
+        <label for="message" class="fw-bold mb-3">
+          メッセージ
+          <span class="fw-normal text-muted" style="font-size: small;">魅力的なアピールで来店を促しましょう！</span>
+        </label>
+        <textarea class="form-control" id="message" name="message" rows="5" placeholder="「今ならドリンク1杯無料です！」「3時間の見放題3000円プランあります！」などお店のアピールポイントを登録できます！"></textarea>
+      </div>
+      <div class="d-flex justify-content-center">
+        <input type="submit" class="mt-4 btn btn-primary rounded-pill" value="キャッチを開始">
+      </div>
+    </form>
+  </main>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
+    <script>    
+        $(document).ready(function () {
+          const liffId = "1660947540-vLp59q1w";
+          initializeLiff(liffId);
+          for (var i = 1; i <= 10; i++) {
+            var member_button = `<input type="checkbox" class="btn-check" id="member${i}" name="member[]" value="${i}人">
+                                  <label class="btn btn-outline-primary" for="member${i}">${i}人</label>`
+            $('#member_button_area').append(member_button);
+          }
+        })
+
+        function initializeLiff(liffId) {
+            liff.init({
+                liffId:liffId
+            }).then(() => {
+                initializeApp();
+            }).catch((err) => {
+                // window.alert('LIFF Initialization failed', err.code, err.message);
+            });
+        }
+
+        function sendText(text) {
+            liff.sendMessages([{
+                'type': 'text',
+                'text': text
+            }]).then(function () {
+                liff.closeWindow();
+            }).catch(function (error) {
+                // window.alert(`Failed to send message ` + error);
+            });
+        }
+
+        const params = (new URL(document.location)).searchParams;
+        const key = params.get('key');
+
+        $(function () {
+            $('form').submit(function () {
+                if (!$("input[name='member[]']:checked").length > 0) {
+                  event.preventDefault();
+                  window.alert('案内可能な人数を選択してください');
+                  return
+                }
+                if (!$("input[name='seat[]']:checked").length > 0) {
+                  event.preventDefault();
+                  window.alert('案内可能な席を選択してください');
+                  return
+                }
+                const memberArray = $("input[name='member[]']:checked").map(function() {
+                  return $(this).val();
+                }).get()
+                const seatArray = $("input[name='seat[]']:checked").map(function() {
+                  return $(this).val();
+                }).get()
+                const message  = $('textarea[name="message"]').val();
+                console.log($('textarea[name="message"]').val())
+                console.log(memberArray)
+                console.log(seatArray)
+                const msg = `キャッチ条件\n人　　数：${memberArray}\nご案内席：${seatArray}\nメッセージ：${message}`;
+                console.log(msg)
+                sendText(msg);
+                return false;
+            });
+        });
+
+    </script>
+
+</body>
+</html>
