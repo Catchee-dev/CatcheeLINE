@@ -7,6 +7,7 @@
     <title>キャッチする</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.min.css">
+    <script src="https://kit.fontawesome.com/d3bcd8bec8.js" crossorigin="anonymous"></script>
     <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
     <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script> -->
@@ -21,6 +22,12 @@
 
       :root {
         --primary: #fd7e14;
+      }
+      .text-primary {
+        color: var(--primary)!important;
+      }
+      .bg-primary {
+        background-color: var(--primary)!important;
       }
       .btn-primary {
         background-color: var(--primary);
@@ -54,6 +61,19 @@
           background-color: var(--primary);
           border-color: var(--primary);
       }
+      .flash {
+        animation: flash 1s linear infinite;
+      }
+      @keyframes flash {
+        0%,
+        100% {
+          opacity: 1;
+        }
+
+        50% {
+          opacity: 0;
+        }
+      }
     </style>
     
 </head>
@@ -62,11 +82,17 @@
     <h5 class="border-bottom py-2 text-center">キャッチする</h5>
   </header>
   <main class="">
-    <form class="p-3">
+    <div class="text-center fs-4 mt-3">
+      ＼　<a href="#user_visit_section" style="color:#fd7e14;">新機能</a>が追加されました！！　／
+    </div>
+    <form id="catch_form" class="p-3">
       <div class="">
           <label class="fw-bold mb-3">
             案内可能な人数
             <span class="fw-normal text-muted" style="font-size: small;">（複数選択できます）</span>
+            <div class="text-muted" style="font-size: small;">
+              例）1〜3名の場合は1人,2人,3人を選択してください。
+            </div>
           </label>
           <div id="member_button_area" name="member_button_area" class="scroll_x">
             <!-- ここにボタン -->
@@ -104,11 +130,83 @@
       <div class="d-flex justify-content-center">
         <input type="submit" class="mt-4 btn btn-primary rounded-pill" value="キャッチを開始">
       </div>
+      <div id="user_visit_section">
+        <div class="fw-bold mt-3 d-flex align-items-center">
+          今お店をしているユーザー<span class="badge bg-primary flash" style="margin-left: 0.5rem;">new</span>
+        </div>
+        <div class="small text-muted" style="font-size: small;"><i class="text-primary fa-solid fa-comment fa-lg"></i>ボタンからユーザーに直接メッセージを送信できます！</div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">日時</th>
+              <th scope="col">人数</th>
+              <th scope="col">希望</th>
+              <th scope="col"></th>
+            </tr>
+          </thead>
+          <tbody id="user_visit_list">
+            <tr>
+              <td colspan="4" class="text-center">
+                データを取得しています・・・
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </form>
-      
     <div class="my-3 text-center">
       <a href="https://catchee-dev.github.io/CatcheeLINE/service" style="color: #fd7e14;">操作説明はこちら</a>
     </div>
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">メッセージ</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="mb-1">
+                <div class="fw-bold">ユーザーの情報</div>
+                <div class="d-flex">
+                  <div>人数：</div>
+                  <div id="member"></div>
+                  <div style="margin-left: 1rem;">希望条件：</div>
+                  <div id="hope"></div>
+                </div>
+              </div>
+              <div class="mb-3">
+                <form id="message_form">
+                  <div class="form-group">
+                    <input type="hidden" id="message_send_user_id" value="">
+                    <label for="userSendMessage" class="fw-bold">メッセージ</label>
+                    <textarea class="form-control" id="userSendMessage" rows="3" placeholder="メッセージを入力してください。メッセージは直接ユーザーに送信されます。"></textarea>
+                  </div>
+                </form>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <div type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="cathcMessage()">送信</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      var exampleModal = document.getElementById('exampleModal')
+      exampleModal.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget
+        var button = event.relatedTarget
+        var message_send_visit_id = button.getAttribute('data-bs-message_send_visit_id')
+        console.log(message_send_visit_id)
+        var member = button.getAttribute('data-bs-member')
+        var hope = button.getAttribute('data-bs-hope')
+        $("#message_send_user_id").val(message_send_visit_id)
+        $("#exampleModal").find('#member').text(member)
+        $("#exampleModal").find('#hope').text(hope)
+      })
+    </script>
   </main>
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
@@ -132,17 +230,36 @@
                 liffId:liffId
             }).then(() => {
                 initializeApp();
+                if (!liff.isLoggedIn()) {
+                  liff.login();
+                }
+                userProfile()
             }).catch((err) => {
                 // window.alert('LIFF Initialization failed', err.code, err.message);
             });
         }
 
-        function sendText(text) {
+        function userProfile() {
+          liff
+            .getProfile()
+            .then((profile) => {
+              const name = profile.displayName;
+              const userId = profile.userId;
+              $("#user_id").text(userId);
+            })
+            .catch((err) => {
+              console.log("error", err);
+            });
+        }
+
+        function sendText(text, close_window_flag = true) {
             liff.sendMessages([{
                 'type': 'text',
                 'text': text
             }]).then(function () {
+              if(close_window_flag == true) {
                 liff.closeWindow();
+              }
             }).catch(function (error) {
                 // window.alert(`Failed to send message ` + error);
             });
@@ -152,7 +269,7 @@
         const key = params.get('key');
 
         $(function () {
-            $('form').submit(function () {
+            $('form#catch_form').submit(function () {
                 if (!$("input[name='member[]']:checked").length > 0) {
                   event.preventDefault();
                   window.alert('案内可能な人数を選択してください');
@@ -180,6 +297,81 @@
             });
         });
 
+        $(function () {
+          $.ajax({
+            url: 'https://script.google.com/macros/s/AKfycbyjGkcYPWAyicIoduWjHpLpghR_sZdMBtWi7UvOSiqcXXERJxdCOp-bUh2cDhJQK8qX/exec',
+            type: 'GET',
+            dataType: "json",
+          }).done(function (data) {
+            //取得jsonデータ
+            console.log(data);
+            if(data.length > 0 && data[0][0] != '') {
+              html = '';
+              $.each(data, function(index, item) {
+                // 人数とカテゴリの情報を取得して、リストアイテムに追加
+                var message_send_visit_id = item[0];
+                var time = dateFormat(item[3]);
+                var member = item[4];
+                var hope = item[5];
+                
+                // trを作成
+                trItem = `
+                      <tr>
+                        <td>${time}</td>
+                        <td>${member}</td>
+                        <td>${hope}</td>
+                        <td>
+                          <div type="" class="" style="color:#fd7e14;" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-message_send_visit_id="${message_send_visit_id}" data-bs-time="${time}" data-bs-member="${member}" data-bs-hope="${hope}"><i class="fa-solid fa-comment fa-lg"></i></div>
+                        </td>
+                      </tr>
+                `
+                html += trItem;
+                $("#user_visit_list").html(html);
+              });
+              
+            } else {
+              // trを作成
+              trItem = `
+                      <tr>
+                        <td colspan="4" class="text-center">見つかりませんでした</td>
+                      </tr>
+                `
+              $("#user_visit_list").html(trItem);
+            }
+          }).fail(function (data) {
+            // error
+            console.log('error');
+          });
+        });
+
+        function dateFormat(dateStr) {
+          console.log(dateStr)
+          var date = new Date(dateStr);
+          date.setTime(date.getTime() + 9); // UTCから9時間（日本時間）を加算
+          var hh = date.getHours().toString().padStart(2, '0'); // 時刻の時の部分を2桁の文字列に整形する
+          var mm = date.getMinutes().toString().padStart(2, '0'); // 時刻の分の部分を2桁の文字列に整形する
+          var formattedTimeStr = hh + ':' + mm; // hh:mm形式の文字列を生成する
+          console.log(formattedTimeStr); // => "23:21"
+          return formattedTimeStr
+        }
+
+        function cathcMessage() {
+          const send_visit_id  = $("#message_send_user_id").val();
+          console.log(send_visit_id)
+          const message  = $('#userSendMessage').val();
+          console.log($('#userSendMessage').val())
+          if(message == '') {
+            event.preventDefault();
+            window.alert('メッセージを入力してください');
+            return
+          }
+          const msg = `ID：${send_visit_id}\nメッセージ：${message}`;
+          console.log(msg)
+          $('#userSendMessage').val('');
+          sendText(msg, false);
+          window.alert('メッセージを送信しました！');
+          return false;
+        }
     </script>
 
 </body>
